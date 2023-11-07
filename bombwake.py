@@ -43,7 +43,7 @@ gif = pygame.image.load("ex05/data/explosion.gif")
 black_floor = pygame.image.load("ex05/data/black.png")
 red_floor = pygame.image.load("ex05/data/red.png")
 yellow_floor = pygame.image.load("ex05/data/yellow_lines.jpg")
-
+black_floor_rect = black_floor.get_rect()
 # ボムクラスを定義
 class Bomb:
     def __init__(self):
@@ -54,6 +54,7 @@ class Bomb:
         self.set_random_speed()
         self.created_time = time.time()
         self.dragging = False
+        self.rect = bomb_image.get_rect()
 
 
     def set_random_speed(self):
@@ -288,9 +289,10 @@ while running:
 
         elif event.type == pygame.MOUSEBUTTONUP:
             for bomb in bombs:
+                if bomb.dragging:
+                    if bomb.rect.colliderect(black_floor_rect):
+                        running = False  # ゲームを終了
                 bomb.dragging = False
-                if (b1 == 1 and c1 == 1) or (b2 == 1 and c2 == 1):
-                        break
     
     # ボムを移動して描画
     bombs_to_remove = []
@@ -307,7 +309,6 @@ while running:
                 bombs_to_remove.append(bomb)
                 for bomb in bombs_to_remove:
                     bombs.remove(bomb)
-
 
     if explosion_time is not None and current_time - explosion_time > 1:
         running = False  # 爆発後1秒間でゲームを終了
