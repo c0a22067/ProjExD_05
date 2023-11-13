@@ -245,6 +245,9 @@ explosion_time = None  # 爆発が発生した時間
 while running:
     time_passed = clock.tick(fps)
 
+    game_over_rect = pygame.Rect(200, 200, 100, 100)
+    pygame.draw.rect(screen, (255, 0, 0), game_over_rect)
+
     back()
     safezone_def()
 
@@ -293,6 +296,11 @@ while running:
                     if bomb.rect.colliderect(black_floor_rect):
                         running = False  # ゲームを終了
                 bomb.dragging = False
+        
+        elif event.type == pygame.MOUSEMOTION:
+            for bomb in bombs:
+                if bomb.dragging:
+                    bomb.rect.move_ip(event.rel)
     
     # ボムを移動して描画
     bombs_to_remove = []
@@ -312,6 +320,7 @@ while running:
 
     if explosion_time is not None and current_time - explosion_time > 1:
         running = False  # 爆発後1秒間でゲームを終了
+
 
     clock.tick()
     # print(clock.get_fps())
